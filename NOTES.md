@@ -14,6 +14,13 @@
 - Fixes: unique tool_call ids (400s), must-call-all-three prompt + early-stop nudge.
 - Checks: 10/10 three-tool signature, $0.13 total, 19 passed, ruff clean.
 
+## M2 (wiring)
+- dataflow: select_group, scan_trace (trusted `to`), wire_group (exact-equality).
+- Derived markers: priority=judge, subject/body=template; idempotency_key excluded.
+- Two hand-written injection fixtures under tests/fixtures/.
+- Provenance `<tool>.<field>` (unambiguous prev lookup) instead of `result.<field>`.
+- Checks: real traces wire `to`->sender unflagged; ambiguity fails named.
+
 ## Privacy hardening
 - Mock server binds 127.0.0.1 only (Makefile); keys never leave this machine.
 - .env gitignored+untracked; role configs hold env names, never values (tested).
