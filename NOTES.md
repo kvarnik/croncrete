@@ -6,3 +6,10 @@
 - Pinned core + server deps exact; example owns fastapi/uvicorn via requirements file.
 - Live Meta + Open "reply with ok" calls pending keys/format confirmation.
 - Checks: pytest + ruff clean, no-FastAPI import, five CLI commands.
+
+## M1 (mocks, agent, traces) — partial, keyless parts
+- Recorder + TraceRecord schema; trace per email id, totals from pricing table.
+- Mock services: inbox/CRM/tickets/outbox/drift; 10 hand-written seed emails.
+- Agent loop capped at 8 steps; `make traces` resumable by email id.
+- Live `make traces` blocked on Meta API keys + request-format confirmation.
+- Checks: 16 passed, ruff clean; trace-signature check runs after live record.

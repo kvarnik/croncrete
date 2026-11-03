@@ -1,0 +1,136 @@
+{
+  "customers": [
+    {
+      "customer_id": "c-001",
+      "email": "alice@acme.example",
+      "name": "Alice",
+      "open_tickets": 2,
+      "tier": "enterprise"
+    },
+    {
+      "customer_id": "c-002",
+      "email": "bob@acme.example",
+      "name": "Bob",
+      "open_tickets": 1,
+      "tier": "enterprise"
+    },
+    {
+      "customer_id": "c-003",
+      "email": "carol@beta.example",
+      "name": "Carol",
+      "open_tickets": 1,
+      "tier": "pro"
+    },
+    {
+      "customer_id": "c-004",
+      "email": "dave@beta.example",
+      "name": "Dave",
+      "open_tickets": 0,
+      "tier": "pro"
+    },
+    {
+      "customer_id": "c-005",
+      "email": "erin@personal.example",
+      "name": "Erin",
+      "open_tickets": 0,
+      "tier": "free"
+    },
+    {
+      "customer_id": "c-006",
+      "email": "frank@personal.example",
+      "name": "Frank",
+      "open_tickets": 1,
+      "tier": "free"
+    },
+    {
+      "customer_id": "c-007",
+      "email": "grace@globex.example",
+      "name": "Grace",
+      "open_tickets": 3,
+      "tier": "enterprise"
+    },
+    {
+      "customer_id": "c-008",
+      "email": "heidi@initech.example",
+      "name": "Heidi",
+      "open_tickets": 0,
+      "tier": "pro"
+    },
+    {
+      "customer_id": "c-009",
+      "email": "ivan@personal.example",
+      "name": "Ivan",
+      "open_tickets": 0,
+      "tier": "free"
+    },
+    {
+      "customer_id": "c-010",
+      "email": "judy@umbrella.example",
+      "name": "Judy",
+      "open_tickets": 2,
+      "tier": "pro"
+    }
+  ],
+  "emails": [
+    {
+      "body": "Hi, our production API started returning 500s for every request about 20 minutes ago. Status page shows green but our dashboards are all red. This is blocking all of our customers. Please treat as urgent.",
+      "id": "e01",
+      "sender": "alice@acme.example",
+      "subject": "URGENT: production API down, all requests failing"
+    },
+    {
+      "body": "Hello billing team, I am reviewing our Q3 invoice and line items 4 and 7 do not match the quote we signed in June. Could you send a corrected breakdown when you get a chance? No rush.",
+      "id": "e02",
+      "sender": "bob@acme.example",
+      "subject": "Question about Q3 invoice line items"
+    },
+    {
+      "body": "Our nightly data export has been stuck at 90 percent for six hours. The job usually finishes in forty minutes. We need the file for a board meeting tomorrow morning, so any help today would be appreciated.",
+      "id": "e03",
+      "sender": "carol@beta.example",
+      "subject": "Data export stuck at 90% for 6 hours"
+    },
+    {
+      "body": "Hi there, our team is growing and we would like to set up SSO so we can manage seats centrally. Is that available on our current plan, and what are the setup steps?",
+      "id": "e04",
+      "sender": "dave@beta.example",
+      "subject": "Feature request: SSO for our team"
+    },
+    {
+      "body": "I got logged out yesterday and the password reset link never arrives, I checked spam too. I need to get back in today because my files are in there. Please help.",
+      "id": "e05",
+      "sender": "erin@personal.example",
+      "subject": "Locked out, reset link not working"
+    },
+    {
+      "body": "Quick question: how do I change my workspace name? I looked in settings but could not find it. Thanks!",
+      "id": "e06",
+      "sender": "frank@personal.example",
+      "subject": "How do I change my workspace name?"
+    },
+    {
+      "body": "Hello, our security team needs your current SOC2 report by Friday to finish our vendor review. If we miss the deadline our renewal gets pushed a quarter, so a fast turnaround matters here.",
+      "id": "e07",
+      "sender": "grace@globex.example",
+      "subject": "Need SOC2 report by Friday for renewal"
+    },
+    {
+      "body": "Hi, our company card expired and I need to put a new one on file before the next billing date. Where do I update payment details?",
+      "id": "e08",
+      "sender": "heidi@initech.example",
+      "subject": "Update credit card on file"
+    },
+    {
+      "body": "Do you have a mobile app? I do most of my work from my phone and the mobile site is a bit hard to use. Just curious, no problem if not.",
+      "id": "e09",
+      "sender": "ivan@personal.example",
+      "subject": "Do you have a mobile app?"
+    },
+    {
+      "body": "Since about 9am today none of our webhook deliveries are arriving. Our endpoint is healthy and we have not changed anything on our side. Can you check whether events are backing up?",
+      "id": "e10",
+      "sender": "judy@umbrella.example",
+      "subject": "Webhook deliveries failing since this morning"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+Re: {subject}
+
+Hi {name}, we've logged your request as ticket {ticket_id} with priority {priority}. Our team will reply within {sla}.
