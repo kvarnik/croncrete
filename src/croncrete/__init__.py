@@ -3,6 +3,7 @@
 from enum import StrEnum
 
 from croncrete import llm
+from croncrete.compiler.codegen import compile
 from croncrete.tracing import Recorder, TraceRecord
 
 
@@ -12,4 +13,4 @@ class Priority(StrEnum):
     P3 = "P3"
 
 
-__all__ = ["Priority", "Recorder", "TraceRecord", "llm"]
+__all__ = ["Priority", "Recorder", "TraceRecord", "compile", "llm"]

@@ -21,6 +21,16 @@
 - Provenance `<tool>.<field>` (unambiguous prev lookup) instead of `result.<field>`.
 - Checks: real traces wire `to`->sender unflagged; ambiguity fails named.
 
+## M3 (compiler)
+- schema_infer: required=in-every-response, extra forbid, nested models, no enums.
+- checks: import/call fence + map_* signatures, then ruff format+check.
+- codegen: guards/outputs/maps, STEPS/SCOPES, judge(), template render, end checks.
+- Generated module embeds judge prompt/template/SLA; no json import (tight fence).
+- Template adherence: e01-e04+e07 exact; 5 others omit the Re: header line.
+- Replay test generator covers first three clean traces (all exact).
+- Live compile ok (1 retry on 60s timeout); triage.py + replay test committed.
+- Checks: module passes fence+ruff, replay passes, eval/banned-import rejected.
+
 ## Privacy hardening
 - Mock server binds 127.0.0.1 only (Makefile); keys never leave this machine.
 - .env gitignored+untracked; role configs hold env names, never values (tested).
