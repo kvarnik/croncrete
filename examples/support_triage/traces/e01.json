@@ -1,0 +1,93 @@
+{
+  "run_id": "2f0b98816e41",
+  "input": {
+    "body": "Hi, our production API started returning 500s for every request about 20 minutes ago. Status page shows green but our dashboards are all red. This is blocking all of our customers. Please treat as urgent.",
+    "id": "e01",
+    "sender": "alice@acme.example",
+    "subject": "URGENT: production API down, all requests failing"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "alice@acme.example"
+      },
+      "result": {
+        "customer_id": "c-001",
+        "name": "Alice",
+        "tier": "enterprise",
+        "open_tickets": 2
+      },
+      "latency_ms": 12
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-001",
+        "priority": "P1",
+        "summary": "URGENT: production API down, all requests failing"
+      },
+      "result": {
+        "ticket_id": "T-1001"
+      },
+      "latency_ms": 10
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "alice@acme.example",
+        "subject": "Re: URGENT: production API down, all requests failing",
+        "body": "Re: URGENT: production API down, all requests failing\n\nHi Alice, we've logged your request as ticket T-1001 with priority P1. Our team will reply within 4 hours."
+      },
+      "result": {
+        "message_id": "M-5001"
+      },
+      "latency_ms": 12
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 949,
+      "tokens_out": 334,
+      "latency_ms": 1736
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1080,
+      "tokens_out": 394,
+      "latency_ms": 1456
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1202,
+      "tokens_out": 432,
+      "latency_ms": 1333
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1366,
+      "tokens_out": 460,
+      "latency_ms": 2142
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1001",
+    "priority": "P1",
+    "to": "alice@acme.example",
+    "subject": "Re: URGENT: production API down, all requests failing",
+    "body": "Re: URGENT: production API down, all requests failing\n\nHi Alice, we've logged your request as ticket T-1001 with priority P1. Our team will reply within 4 hours."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 6701,
+    "tokens_in": 4597,
+    "tokens_out": 1620,
+    "cost_usd": 0.01263125
+  },
+  "flagged": false,
+  "flag_reason": null
+}

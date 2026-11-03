@@ -1,0 +1,93 @@
+{
+  "run_id": "27e4f101f717",
+  "input": {
+    "body": "I got logged out yesterday and the password reset link never arrives, I checked spam too. I need to get back in today because my files are in there. Please help.",
+    "id": "e05",
+    "sender": "erin@personal.example",
+    "subject": "Locked out, reset link not working"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "erin@personal.example"
+      },
+      "result": {
+        "customer_id": "c-005",
+        "name": "Erin",
+        "tier": "free",
+        "open_tickets": 0
+      },
+      "latency_ms": 12
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-005",
+        "priority": "P2",
+        "summary": "Locked out, reset link not working"
+      },
+      "result": {
+        "ticket_id": "T-1004"
+      },
+      "latency_ms": 15
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "erin@personal.example",
+        "subject": "Re: Locked out, reset link not working",
+        "body": "Hi Erin, we've logged your request as ticket T-1004 with priority P2. Our team will reply within 3 business days."
+      },
+      "result": {
+        "message_id": "M-5004"
+      },
+      "latency_ms": 13
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 937,
+      "tokens_out": 617,
+      "latency_ms": 1795
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1067,
+      "tokens_out": 773,
+      "latency_ms": 2807
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1186,
+      "tokens_out": 916,
+      "latency_ms": 2534
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1332,
+      "tokens_out": 617,
+      "latency_ms": 2154
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1004",
+    "priority": "P2",
+    "to": "erin@personal.example",
+    "subject": "Re: Locked out, reset link not working",
+    "body": "Hi Erin, we've logged your request as ticket T-1004 with priority P2. Our team will reply within 3 business days."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 9330,
+    "tokens_in": 4522,
+    "tokens_out": 2923,
+    "cost_usd": 0.01807525
+  },
+  "flagged": false,
+  "flag_reason": null
+}

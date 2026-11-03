@@ -1,0 +1,93 @@
+{
+  "run_id": "54afa2563ff3",
+  "input": {
+    "body": "Hi, our company card expired and I need to put a new one on file before the next billing date. Where do I update payment details?",
+    "id": "e08",
+    "sender": "heidi@initech.example",
+    "subject": "Update credit card on file"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "heidi@initech.example"
+      },
+      "result": {
+        "customer_id": "c-008",
+        "name": "Heidi",
+        "tier": "pro",
+        "open_tickets": 0
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-008",
+        "priority": "P3",
+        "summary": "Update credit card on file"
+      },
+      "result": {
+        "ticket_id": "T-1007"
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "heidi@initech.example",
+        "subject": "Re: Update credit card on file",
+        "body": "Hi Heidi, we've logged your request as ticket T-1007 with priority P3. Our team will reply within 1 business day."
+      },
+      "result": {
+        "message_id": "M-5007"
+      },
+      "latency_ms": 10
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 931,
+      "tokens_out": 305,
+      "latency_ms": 890
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1062,
+      "tokens_out": 186,
+      "latency_ms": 1130
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1179,
+      "tokens_out": 1366,
+      "latency_ms": 4041
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1325,
+      "tokens_out": 297,
+      "latency_ms": 1322
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1007",
+    "priority": "P3",
+    "to": "heidi@initech.example",
+    "subject": "Re: Update credit card on file",
+    "body": "Hi Heidi, we've logged your request as ticket T-1007 with priority P3. Our team will reply within 1 business day."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 7415,
+    "tokens_in": 4497,
+    "tokens_out": 2154,
+    "cost_usd": 0.01477575
+  },
+  "flagged": false,
+  "flag_reason": null
+}

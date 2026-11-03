@@ -1,0 +1,93 @@
+{
+  "run_id": "749a9d6f72f1",
+  "input": {
+    "body": "Our nightly data export has been stuck at 90 percent for six hours. The job usually finishes in forty minutes. We need the file for a board meeting tomorrow morning, so any help today would be appreciated.",
+    "id": "e03",
+    "sender": "carol@beta.example",
+    "subject": "Data export stuck at 90% for 6 hours"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "carol@beta.example"
+      },
+      "result": {
+        "customer_id": "c-003",
+        "name": "Carol",
+        "tier": "pro",
+        "open_tickets": 1
+      },
+      "latency_ms": 12
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-003",
+        "priority": "P2",
+        "summary": "Data export stuck at 90% for 6 hours"
+      },
+      "result": {
+        "ticket_id": "T-1002"
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "carol@beta.example",
+        "subject": "Re: Data export stuck at 90% for 6 hours",
+        "body": "Re: Data export stuck at 90% for 6 hours\n\nHi Carol, we've logged your request as ticket T-1002 with priority P2. Our team will reply within 1 business day."
+      },
+      "result": {
+        "message_id": "M-5002"
+      },
+      "latency_ms": 10
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 949,
+      "tokens_out": 450,
+      "latency_ms": 1935
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1076,
+      "tokens_out": 319,
+      "latency_ms": 1587
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1199,
+      "tokens_out": 549,
+      "latency_ms": 1417
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1364,
+      "tokens_out": 382,
+      "latency_ms": 2528
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1002",
+    "priority": "P2",
+    "to": "carol@beta.example",
+    "subject": "Re: Data export stuck at 90% for 6 hours",
+    "body": "Re: Data export stuck at 90% for 6 hours\n\nHi Carol, we've logged your request as ticket T-1002 with priority P2. Our team will reply within 1 business day."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 7500,
+    "tokens_in": 4588,
+    "tokens_out": 1700,
+    "cost_usd": 0.01296
+  },
+  "flagged": false,
+  "flag_reason": null
+}

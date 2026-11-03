@@ -1,0 +1,93 @@
+{
+  "run_id": "7ddf8b75c528",
+  "input": {
+    "body": "Do you have a mobile app? I do most of my work from my phone and the mobile site is a bit hard to use. Just curious, no problem if not.",
+    "id": "e09",
+    "sender": "ivan@personal.example",
+    "subject": "Do you have a mobile app?"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "ivan@personal.example"
+      },
+      "result": {
+        "customer_id": "c-009",
+        "name": "Ivan",
+        "tier": "free",
+        "open_tickets": 0
+      },
+      "latency_ms": 10
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-009",
+        "priority": "P3",
+        "summary": "Do you have a mobile app?"
+      },
+      "result": {
+        "ticket_id": "T-1008"
+      },
+      "latency_ms": 10
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "ivan@personal.example",
+        "subject": "Re: Do you have a mobile app?",
+        "body": "Hi Ivan, we've logged your request as ticket T-1008 with priority P3. Our team will reply within 3 business days."
+      },
+      "result": {
+        "message_id": "M-5008"
+      },
+      "latency_ms": 10
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 937,
+      "tokens_out": 269,
+      "latency_ms": 863
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1064,
+      "tokens_out": 298,
+      "latency_ms": 1090
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1182,
+      "tokens_out": 443,
+      "latency_ms": 1009
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1327,
+      "tokens_out": 568,
+      "latency_ms": 2211
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1008",
+    "priority": "P3",
+    "to": "ivan@personal.example",
+    "subject": "Re: Do you have a mobile app?",
+    "body": "Hi Ivan, we've logged your request as ticket T-1008 with priority P3. Our team will reply within 3 business days."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 5203,
+    "tokens_in": 4510,
+    "tokens_out": 1578,
+    "cost_usd": 0.012344
+  },
+  "flagged": false,
+  "flag_reason": null
+}

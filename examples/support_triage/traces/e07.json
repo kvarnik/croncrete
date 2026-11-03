@@ -1,0 +1,93 @@
+{
+  "run_id": "041765c4b9a9",
+  "input": {
+    "body": "Hello, our security team needs your current SOC2 report by Friday to finish our vendor review. If we miss the deadline our renewal gets pushed a quarter, so a fast turnaround matters here.",
+    "id": "e07",
+    "sender": "grace@globex.example",
+    "subject": "Need SOC2 report by Friday for renewal"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "grace@globex.example"
+      },
+      "result": {
+        "customer_id": "c-007",
+        "name": "Grace",
+        "tier": "enterprise",
+        "open_tickets": 3
+      },
+      "latency_ms": 12
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-007",
+        "priority": "P2",
+        "summary": "Need SOC2 report by Friday for renewal"
+      },
+      "result": {
+        "ticket_id": "T-1006"
+      },
+      "latency_ms": 14
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "grace@globex.example",
+        "subject": "Re: Need SOC2 report by Friday for renewal",
+        "body": "Re: Need SOC2 report by Friday for renewal\n\nHi Grace, we've logged your request as ticket T-1006 with priority P2. Our team will reply within 4 hours."
+      },
+      "result": {
+        "message_id": "M-5006"
+      },
+      "latency_ms": 9
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 943,
+      "tokens_out": 407,
+      "latency_ms": 1108
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1075,
+      "tokens_out": 378,
+      "latency_ms": 1174
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1195,
+      "tokens_out": 538,
+      "latency_ms": 1155
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1354,
+      "tokens_out": 112,
+      "latency_ms": 774
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1006",
+    "priority": "P2",
+    "to": "grace@globex.example",
+    "subject": "Re: Need SOC2 report by Friday for renewal",
+    "body": "Re: Need SOC2 report by Friday for renewal\n\nHi Grace, we've logged your request as ticket T-1006 with priority P2. Our team will reply within 4 hours."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 4246,
+    "tokens_in": 4567,
+    "tokens_out": 1435,
+    "cost_usd": 0.0118075
+  },
+  "flagged": false,
+  "flag_reason": null
+}

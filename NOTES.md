@@ -7,12 +7,12 @@
 - Live Meta + Open "reply with ok" calls pending keys/format confirmation.
 - Checks: pytest + ruff clean, no-FastAPI import, five CLI commands.
 
-## M1 (mocks, agent, traces) — partial, keyless parts
+## M1 (mocks, agent, traces) — done
 - Recorder + TraceRecord schema; trace per email id, totals from pricing table.
 - Mock services: inbox/CRM/tickets/outbox/drift; 10 hand-written seed emails.
 - Agent loop capped at 8 steps; `make traces` resumable by email id.
-- Live `make traces` blocked on Meta API keys + request-format confirmation.
-- Checks: 16 passed, ruff clean; trace-signature check runs after live record.
+- Fixes: unique tool_call ids (400s), must-call-all-three prompt + early-stop nudge.
+- Checks: 10/10 three-tool signature, $0.13 total, 19 passed, ruff clean.
 
 ## Privacy hardening
 - Mock server binds 127.0.0.1 only (Makefile); keys never leave this machine.

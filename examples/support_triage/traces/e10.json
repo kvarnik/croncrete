@@ -1,0 +1,93 @@
+{
+  "run_id": "1045689b4b74",
+  "input": {
+    "body": "Since about 9am today none of our webhook deliveries are arriving. Our endpoint is healthy and we have not changed anything on our side. Can you check whether events are backing up?",
+    "id": "e10",
+    "sender": "judy@umbrella.example",
+    "subject": "Webhook deliveries failing since this morning"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "judy@umbrella.example"
+      },
+      "result": {
+        "customer_id": "c-010",
+        "name": "Judy",
+        "tier": "pro",
+        "open_tickets": 2
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-010",
+        "priority": "P1",
+        "summary": "Webhook deliveries failing since this morning"
+      },
+      "result": {
+        "ticket_id": "T-1009"
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "judy@umbrella.example",
+        "subject": "Re: Webhook deliveries failing since this morning",
+        "body": "Hi Judy, we've logged your request as ticket T-1009 with priority P1. Our team will reply within 1 business day."
+      },
+      "result": {
+        "message_id": "M-5009"
+      },
+      "latency_ms": 8
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 940,
+      "tokens_out": 409,
+      "latency_ms": 1517
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1069,
+      "tokens_out": 396,
+      "latency_ms": 1364
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1187,
+      "tokens_out": 1143,
+      "latency_ms": 3053
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1335,
+      "tokens_out": 241,
+      "latency_ms": 1479
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1009",
+    "priority": "P1",
+    "to": "judy@umbrella.example",
+    "subject": "Re: Webhook deliveries failing since this morning",
+    "body": "Hi Judy, we've logged your request as ticket T-1009 with priority P1. Our team will reply within 1 business day."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 7443,
+    "tokens_in": 4531,
+    "tokens_out": 2189,
+    "cost_usd": 0.014967000000000001
+  },
+  "flagged": false,
+  "flag_reason": null
+}

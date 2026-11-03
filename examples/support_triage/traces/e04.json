@@ -1,0 +1,93 @@
+{
+  "run_id": "8917c48dc5c7",
+  "input": {
+    "body": "Hi there, our team is growing and we would like to set up SSO so we can manage seats centrally. Is that available on our current plan, and what are the setup steps?",
+    "id": "e04",
+    "sender": "dave@beta.example",
+    "subject": "Feature request: SSO for our team"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "dave@beta.example"
+      },
+      "result": {
+        "customer_id": "c-004",
+        "name": "Dave",
+        "tier": "pro",
+        "open_tickets": 0
+      },
+      "latency_ms": 10
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-004",
+        "priority": "P3",
+        "summary": "Feature request: SSO for our team"
+      },
+      "result": {
+        "ticket_id": "T-1003"
+      },
+      "latency_ms": 4
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "dave@beta.example",
+        "subject": "Re: Feature request: SSO for our team",
+        "body": "Re: Feature request: SSO for our team\n\nHi Dave, we've logged your request as ticket T-1003 with priority P3. Our team will reply within 1 business day."
+      },
+      "result": {
+        "message_id": "M-5003"
+      },
+      "latency_ms": 7
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 940,
+      "tokens_out": 348,
+      "latency_ms": 953
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1068,
+      "tokens_out": 298,
+      "latency_ms": 1016
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1187,
+      "tokens_out": 458,
+      "latency_ms": 1430
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1344,
+      "tokens_out": 483,
+      "latency_ms": 1866
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1003",
+    "priority": "P3",
+    "to": "dave@beta.example",
+    "subject": "Re: Feature request: SSO for our team",
+    "body": "Re: Feature request: SSO for our team\n\nHi Dave, we've logged your request as ticket T-1003 with priority P3. Our team will reply within 1 business day."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 5286,
+    "tokens_in": 4539,
+    "tokens_out": 1587,
+    "cost_usd": 0.012418499999999999
+  },
+  "flagged": false,
+  "flag_reason": null
+}

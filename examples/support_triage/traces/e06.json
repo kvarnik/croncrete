@@ -1,0 +1,93 @@
+{
+  "run_id": "fcfd6ffae5ac",
+  "input": {
+    "body": "Quick question: how do I change my workspace name? I looked in settings but could not find it. Thanks!",
+    "id": "e06",
+    "sender": "frank@personal.example",
+    "subject": "How do I change my workspace name?"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "frank@personal.example"
+      },
+      "result": {
+        "customer_id": "c-006",
+        "name": "Frank",
+        "tier": "free",
+        "open_tickets": 1
+      },
+      "latency_ms": 18
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-006",
+        "priority": "P3",
+        "summary": "How do I change my workspace name?"
+      },
+      "result": {
+        "ticket_id": "T-1005"
+      },
+      "latency_ms": 13
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "frank@personal.example",
+        "subject": "Re: How do I change my workspace name?",
+        "body": "Hi Frank, we've logged your request as ticket T-1005 with priority P3. Our team will reply within 3 business days."
+      },
+      "result": {
+        "message_id": "M-5005"
+      },
+      "latency_ms": 11
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 927,
+      "tokens_out": 385,
+      "latency_ms": 1218
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1055,
+      "tokens_out": 277,
+      "latency_ms": 876
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1174,
+      "tokens_out": 351,
+      "latency_ms": 1176
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1321,
+      "tokens_out": 432,
+      "latency_ms": 1962
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1005",
+    "priority": "P3",
+    "to": "frank@personal.example",
+    "subject": "Re: How do I change my workspace name?",
+    "body": "Hi Frank, we've logged your request as ticket T-1005 with priority P3. Our team will reply within 3 business days."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 5274,
+    "tokens_in": 4477,
+    "tokens_out": 1445,
+    "cost_usd": 0.011737500000000001
+  },
+  "flagged": false,
+  "flag_reason": null
+}

@@ -129,7 +129,9 @@ def build_system_prompt() -> str:
         f"SLA by tier (JSON):\n{sla}\n"
         "Rules: copy `summary` from the email subject. Set `to` to the sender. "
         "Set priority P1 for outages/blocked production, P2 for degraded/time-bound, "
-        "P3 for routine. Render the template with the ticket id, priority, and SLA."
+        "P3 for routine. Render the template with the ticket id, priority, and SLA. "
+        "You MUST call all three tools in order. Never write the reply as chat text; "
+        "the reply goes through outbox_send only. Do not stop early."
     )
 
 
@@ -140,22 +142,39 @@ def run_agent(email: dict[str, Any], run: Any) -> dict[str, Any] | None:
         {"role": "user", "content": json.dumps(email, sort_keys=True)},
     ]
     calls = 0
+    nudges = 0
     while True:
         result = llm.chat(role="agent", messages=messages, tools=OPENAI_TOOLS)
         assistant: dict[str, Any] = {"role": "assistant", "content": result.text}
+        call_ids = [f"call_{calls + i}" for i in range(len(result.tool_calls))]
         if result.tool_calls:
             assistant["tool_calls"] = [
                 {
-                    "id": f"call_{i}",
+                    "id": cid,
                     "type": "function",
                     "function": {"name": c.name, "arguments": json.dumps(c.arguments)},
                 }
-                for i, c in enumerate(result.tool_calls)
+                for cid, c in zip(call_ids, result.tool_calls, strict=True)
             ]
         messages.append(assistant)
         if not result.tool_calls:
-            break
-        for c in result.tool_calls:
+            called = [s.tool for s in run._steps]
+            if called == ["crm_lookup", "tickets_create", "outbox_send"]:
+                break
+            nudges += 1
+            if nudges > 2:
+                break
+            messages.append(
+                {
+                    "role": "user",
+                    "content": (
+                        "You stopped early. Call the remaining tools in order "
+                        "(crm_lookup, tickets_create, outbox_send) right now."
+                    ),
+                }
+            )
+            continue
+        for cid, c in zip(call_ids, result.tool_calls, strict=True):
             calls += 1
             if calls > MAX_STEPS:
                 return None
@@ -164,7 +183,7 @@ def run_agent(email: dict[str, Any], run: Any) -> dict[str, Any] | None:
             messages.append(
                 {
                     "role": "tool",
-                    "tool_call_id": f"call_{calls - 1}",
+                    "tool_call_id": cid,
                     "content": json.dumps(observed, sort_keys=True),
                 }
             )

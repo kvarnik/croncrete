@@ -1,0 +1,93 @@
+{
+  "run_id": "57f3054485cf",
+  "input": {
+    "body": "Hello billing team, I am reviewing our Q3 invoice and line items 4 and 7 do not match the quote we signed in June. Could you send a corrected breakdown when you get a chance? No rush.",
+    "id": "e02",
+    "sender": "bob@acme.example",
+    "subject": "Question about Q3 invoice line items"
+  },
+  "steps": [
+    {
+      "index": 0,
+      "tool": "crm_lookup",
+      "args": {
+        "email": "bob@acme.example"
+      },
+      "result": {
+        "customer_id": "c-002",
+        "name": "Bob",
+        "tier": "enterprise",
+        "open_tickets": 1
+      },
+      "latency_ms": 12
+    },
+    {
+      "index": 1,
+      "tool": "tickets_create",
+      "args": {
+        "customer_id": "c-002",
+        "priority": "P3",
+        "summary": "Question about Q3 invoice line items"
+      },
+      "result": {
+        "ticket_id": "T-1001"
+      },
+      "latency_ms": 11
+    },
+    {
+      "index": 2,
+      "tool": "outbox_send",
+      "args": {
+        "to": "bob@acme.example",
+        "subject": "Re: Question about Q3 invoice line items",
+        "body": "Re: Question about Q3 invoice line items\n\nHi Bob, we've logged your request as ticket T-1001 with priority P3. Our team will reply within 4 hours."
+      },
+      "result": {
+        "message_id": "M-5001"
+      },
+      "latency_ms": 12
+    }
+  ],
+  "llm_calls": [
+    {
+      "role": "agent",
+      "tokens_in": 947,
+      "tokens_out": 405,
+      "latency_ms": 1812
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1074,
+      "tokens_out": 269,
+      "latency_ms": 882
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1193,
+      "tokens_out": 616,
+      "latency_ms": 1868
+    },
+    {
+      "role": "agent",
+      "tokens_in": 1349,
+      "tokens_out": 360,
+      "latency_ms": 1777
+    }
+  ],
+  "output": {
+    "ticket_id": "T-1001",
+    "priority": "P3",
+    "to": "bob@acme.example",
+    "subject": "Re: Question about Q3 invoice line items",
+    "body": "Re: Question about Q3 invoice line items\n\nHi Bob, we've logged your request as ticket T-1001 with priority P3. Our team will reply within 4 hours."
+  },
+  "totals": {
+    "steps": 3,
+    "latency_ms": 6374,
+    "tokens_in": 4563,
+    "tokens_out": 1650,
+    "cost_usd": 0.01271625
+  },
+  "flagged": false,
+  "flag_reason": null
+}
