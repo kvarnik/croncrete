@@ -230,3 +230,153 @@ def _execute(
         error=None,
         workflow=wf_path,
     )
+
+
+def resume(
+    run_id: str,
+    tools: Any,
+    state_db: str | Path = ".croncrete/state.db",
+) -> RunResult:
+    """Reload the workflow and continue a halted run from stored checkpoints.
+
+    Same run_id, so idempotency keys are reused. Earlier steps never rerun.
+    """
+    con = _connect(state_db)
+    try:
+        row = con.execute(
+            "SELECT workflow, input_json, status, failed_step FROM runs WHERE run_id=?",
+            (run_id,),
+        ).fetchone()
+        if row is None:
+            raise ValueError(f"unknown run_id: {run_id}")
+        wf_path, input_json, status, failed_step = row
+        if status != "halted" or failed_step is None:
+            raise ValueError(f"run {run_id} is not resumable")
+        mod = load_workflow(wf_path)
+        input = json.loads(input_json)
+        prev = {
+            tool: json.loads(result)
+            for tool, result in con.execute(
+                "SELECT tool, result_json FROM step_runs"
+                " WHERE run_id=? AND step_index<? AND status='completed'",
+                (run_id, failed_step),
+            ).fetchall()
+        }
+        prio_row = con.execute(
+            "SELECT args_json FROM step_runs WHERE run_id=? AND args_json LIKE '%priority%'"
+            " ORDER BY step_index LIMIT 1",
+            (run_id,),
+        ).fetchone()
+        priority = json.loads(prio_row[0]).get("priority") if prio_row else None
+        attempt = con.execute(
+            "SELECT COUNT(*) FROM step_runs WHERE run_id=? AND step_index=?",
+            (run_id, failed_step),
+        ).fetchone()[0]
+        con.execute("UPDATE runs SET status=? WHERE run_id=?", ("running", run_id))
+        con.commit()
+        try:
+            return _resume_execute(
+                con,
+                mod,
+                Path(wf_path),
+                run_id,
+                input,
+                tools,
+                prev,
+                priority,
+                failed_step,
+                attempt,
+            )
+        except _Halt as h:
+            return h.result
+    finally:
+        con.close()
+
+
+def _resume_execute(
+    con: sqlite3.Connection,
+    mod: ModuleType,
+    wf_path: Path,
+    run_id: str,
+    input: dict[str, Any],
+    tools: Any,
+    prev: dict[str, dict[str, Any]],
+    priority: Any,
+    failed_step: int,
+    attempt: int,
+) -> RunResult:
+    step_args: list[dict[str, Any]] = []
+    for i in range(failed_step, len(mod.STEPS)):
+        meta = mod.STEPS[i]
+        att = attempt if i == failed_step else 0
+        args = mod.build_args(i, dict(input), prev, run_id, priority=priority)
+        if "priority" in args:
+            priority = args["priority"]
+        step_args.append(dict(args))
+        t0 = time.monotonic()
+        raw = tools.call(meta["endpoint"], **args)
+        latency_ms = int((time.monotonic() - t0) * 1000)
+        con.execute(
+            "INSERT INTO calls VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (run_id, i, att, meta["endpoint"], _dump(args), _dump(raw), latency_ms),
+        )
+        guard = getattr(mod, meta["guard"])
+        try:
+            guard.model_validate(raw)
+        except ValidationError as e:
+            con.execute(
+                "INSERT INTO step_runs VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (run_id, i, att, meta["tool"], _dump(args), _dump(raw), "halted", latency_ms),
+            )
+            raise _Halt(
+                _record_halt(
+                    con,
+                    run_id,
+                    wf_path,
+                    i,
+                    {
+                        "stage": "guard",
+                        "tool": meta["tool"],
+                        "expected": guard.model_json_schema(),
+                        "observed": raw,
+                    },
+                )
+            ) from e
+        mapped = getattr(mod, meta["map_fn"])(dict(raw), dict(input), prev)
+        getattr(mod, meta["output_model"]).model_validate(mapped)
+        prev[meta["tool"]] = dict(mapped)
+        con.execute(
+            "INSERT INTO step_runs VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (run_id, i, att, meta["tool"], _dump(args), _dump(mapped), "completed", latency_ms),
+        )
+        con.commit()
+
+    to = next((a["to"] for a in reversed(step_args) if "to" in a), None)
+    try:
+        mod.validate_run(priority, to, input["sender"])
+    except ValueError as e:
+        raise _Halt(
+            _record_halt(con, run_id, wf_path, None, {"stage": "validate", "message": str(e)})
+        ) from e
+    ticket_id = next((m["ticket_id"] for m in prev.values() if "ticket_id" in m), None)
+    last_send = next((a for a in reversed(step_args) if "to" in a), {})
+    output = {
+        "ticket_id": ticket_id,
+        "priority": str(priority),
+        "to": to,
+        "subject": last_send.get("subject"),
+        "body": last_send.get("body"),
+    }
+    con.execute(
+        "UPDATE runs SET status=?, output_json=? WHERE run_id=?",
+        ("completed", _dump(output), run_id),
+    )
+    con.commit()
+    return RunResult(
+        run_id=run_id,
+        status="completed",
+        output=output,
+        failed_step=None,
+        error=None,
+        workflow=wf_path,
+    )

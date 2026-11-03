@@ -53,15 +53,45 @@ def run(
 
 
 @app.command()
-def repair() -> None:
-    """Propose a one-step repair (M5)."""
-    raise NotImplementedError
+def repair(
+    run_id: str = typer.Option(..., "--run-id", help="Halted run to repair."),
+    approve: bool = typer.Option(False, "--approve", help="Apply the patch."),
+    state_db: str = typer.Option(".croncrete/state.db", help="Checkpoint database."),
+) -> None:
+    """Propose a one-step repair."""
+    from croncrete.repair.splice import repair as _repair
+
+    proposal = _repair(run_id, state_db=state_db)
+    typer.echo(proposal.diff)
+    typer.echo(proposal.test_results)
+    if approve:
+        proposal.approve()
+        typer.echo(f"applied to run {run_id}")
 
 
 @app.command()
-def resume() -> None:
-    """Resume a halted run (M5)."""
-    raise NotImplementedError
+def resume(
+    run_id: str = typer.Option(..., "--run-id", help="Halted run to resume."),
+    base_url: str = typer.Option(..., help="Mock services base URL."),
+    state_db: str = typer.Option(".croncrete/state.db", help="Checkpoint database."),
+) -> None:
+    """Resume a halted run."""
+    import sqlite3
+
+    from croncrete.runtime.executor import load_workflow
+    from croncrete.runtime.executor import resume as _resume
+    from croncrete.runtime.tools_client import ToolsClient
+
+    con = sqlite3.connect(state_db)
+    row = con.execute("SELECT workflow FROM runs WHERE run_id=?", (run_id,)).fetchone()
+    con.close()
+    if row is None:
+        raise typer.BadParameter(f"unknown run_id: {run_id}")
+    mod = load_workflow(row[0])
+    result = _resume(run_id, tools=ToolsClient(base_url, list(mod.SCOPES)), state_db=state_db)
+    typer.echo(f"{result.status} {result.run_id}")
+    if result.status != "completed":
+        raise typer.Exit(code=1)
 
 
 @app.command()

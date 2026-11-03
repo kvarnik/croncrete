@@ -42,3 +42,14 @@
 - .env gitignored+untracked; role configs hold env names, never values (tested).
 - Cassettes record payloads only, never auth headers; demo replays keyless.
 - Live Meta probe ok (OpenAI-compatible confirmed); Spark Open keys still missing.
+
+## M4 live halt
+- Drift on: run halts at step 0, expected guard schema vs observed plan shape.
+- Live completed run still needs Spark Open keys (judge).
+
+## M5 (repair + resume) — plumbing done, live model call pending Open keys
+- repair: fenced exec validation vs drifted response + original output model.
+- splice replaces exactly the fn+guard pair; patch via difflib; test generated+run.
+- approve copies patched over workflow; resume reuses run_id + ticket key.
+- Nested models live inside the guard (single-def splice contract).
+- Full cycle tested keyless with canned repair answer; live repair needs Open.

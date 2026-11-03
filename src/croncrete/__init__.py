@@ -4,7 +4,8 @@ from enum import StrEnum
 
 from croncrete import llm
 from croncrete.compiler.codegen import compile
-from croncrete.runtime.executor import RunResult, run
+from croncrete.repair.splice import RepairProposal, repair
+from croncrete.runtime.executor import RunResult, resume, run
 from croncrete.tracing import Recorder, TraceRecord
 
 
@@ -14,4 +15,15 @@ class Priority(StrEnum):
     P3 = "P3"
 
 
-__all__ = ["Priority", "Recorder", "RunResult", "TraceRecord", "compile", "llm", "run"]
+__all__ = [
+    "Priority",
+    "Recorder",
+    "RepairProposal",
+    "RunResult",
+    "TraceRecord",
+    "compile",
+    "llm",
+    "repair",
+    "resume",
+    "run",
+]
