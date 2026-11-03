@@ -95,6 +95,14 @@ def resume(
 
 
 @app.command()
-def report() -> None:
-    """Report agent vs script (M6)."""
-    raise NotImplementedError
+def report(
+    traces: str = typer.Option(..., help="Directory of recorded trace JSON files."),
+    workflow: str = typer.Option(..., help="Compiled workflow module path."),
+    out: str = typer.Option("report.md", help="Markdown report path."),
+) -> None:
+    """Report agent vs script."""
+    from croncrete.report import report as _report
+
+    md = _report(traces, workflow).to_markdown()
+    typer.echo(md)
+    Path(out).write_text(md)

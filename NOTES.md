@@ -53,3 +53,9 @@
 - approve copies patched over workflow; resume reuses run_id + ticket key.
 - Nested models live inside the guard (single-def splice contract).
 - Full cycle tested keyless with canned repair answer; live repair needs Open.
+
+## M6 (report + keyless demo) — code done, cassettes pending Open keys
+- report: agent stats from traces, script stats from validation replay.
+- deterministic exact-match on template-following runs (5); priority agreement.
+- make demo recipe written (normal/drift/halt/repair/resume/report/restore).
+- demo-normal=e01, demo-drift=e02; 10 judge + 1 repair cassettes to record live.
