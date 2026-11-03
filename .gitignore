@@ -218,3 +218,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Croncrete
+.croncrete/
+repairs/*.patch
+!repairs/.gitkeep
+report.md

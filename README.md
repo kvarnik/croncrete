@@ -1,2 +1,3 @@
-# croncrete
-Croncrete compiles repeating AI agent workflows into validated, event-driven code
+# Croncrete
+
+Agents prototype. Croncrete compiles the workflow into Python.
