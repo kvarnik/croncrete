@@ -31,6 +31,12 @@
 - Live compile ok (1 retry on 60s timeout); triage.py + replay test committed.
 - Checks: module passes fence+ruff, replay passes, eval/banned-import rejected.
 
+## M4 (run and halt)
+- executor: build/call/guard/map/output/checkpoint; guard halt carries shapes.
+- checkpoints in sqlite (attempt ints); validate halts use failed_step NULL.
+- scoped client; run_email.py loads inbox then runs; `run` CLI wired.
+- Live completed run needs Spark Open keys; drift halt verifiable without them.
+
 ## Privacy hardening
 - Mock server binds 127.0.0.1 only (Makefile); keys never leave this machine.
 - .env gitignored+untracked; role configs hold env names, never values (tested).

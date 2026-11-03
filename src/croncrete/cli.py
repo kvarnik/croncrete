@@ -33,9 +33,23 @@ def compile(
 
 
 @app.command()
-def run() -> None:
-    """Run a workflow module (M4)."""
-    raise NotImplementedError
+def run(
+    workflow: str = typer.Option(..., help="Compiled workflow module path."),
+    input: str = typer.Option(..., help="Input email JSON file."),
+    base_url: str = typer.Option(..., help="Mock services base URL."),
+    state_db: str = typer.Option(".croncrete/state.db", help="Checkpoint database."),
+) -> None:
+    """Run a workflow module."""
+    from croncrete.runtime.executor import load_workflow
+    from croncrete.runtime.executor import run as _run
+    from croncrete.runtime.tools_client import ToolsClient
+
+    email = json.loads(Path(input).read_text())
+    mod = load_workflow(workflow)
+    result = _run(workflow, email, tools=ToolsClient(base_url, list(mod.SCOPES)), state_db=state_db)
+    typer.echo(f"{result.status} {result.run_id}")
+    if result.status != "completed":
+        raise typer.Exit(code=1)
 
 
 @app.command()
