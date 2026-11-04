@@ -12,6 +12,7 @@ import json
 import os
 import time
 from collections.abc import Callable
+from enum import Enum
 from pathlib import Path
 from typing import Any
 
@@ -221,6 +222,19 @@ def _live_call(
     raise LLMError(f"request failed: {last_exc}")
 
 
+def _validate_schema(response_schema: Any, text: str) -> None:
+    if isinstance(response_schema, type) and issubclass(response_schema, BaseModel):
+        response_schema.model_validate_json(text)
+    elif isinstance(response_schema, type) and issubclass(response_schema, Enum):
+        payload = json.loads(text)
+        if isinstance(payload, dict):
+            response_schema(payload["priority"])  # reasoning channel ignored
+        else:
+            response_schema(payload)
+    else:
+        raise LLMError(f"unsupported response_schema: {response_schema!r}")
+
+
 def _parse_result(data: dict[str, Any], cfg: RoleConfig) -> LLMResult:
     choices = data.get("choices") or [{}]
     message = choices[0].get("message", {})
@@ -267,12 +281,12 @@ def chat(
         # Schema miss retries once with the validation error attached.
         attempt_messages = list(clean_messages)
         last_err: Exception | None = None
-        result = None  # type: ignore[assignment]
+        result = None
         for attempt in range(2):
             data = _live_call(cfg, cfg.model, attempt_messages, tools, response_schema)
             parsed = _parse_result(data, cfg)
             try:
-                response_schema.model_validate_json(parsed.text)
+                _validate_schema(response_schema, parsed.text)
             except Exception as e:
                 last_err = e
                 attempt_messages = [
@@ -284,7 +298,8 @@ def chat(
                 continue
             result = parsed
             break
-        assert result is not None or last_err is not None  # noqa: S101
+        if result is None:
+            raise LLMError(f"role={role} schema miss: {last_err}")
 
     if _recorder_hook is not None:
         _recorder_hook(role, result.tokens_in, result.tokens_out, result.latency_ms)

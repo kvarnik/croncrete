@@ -99,23 +99,25 @@ SCOPES = ["GET /crm/customers", "POST /tickets", "POST /outbox"]
 
 
 JUDGE_PROMPT = (
-    "You are a support triage priority judge.\nYou receive one support "
-    "email (sender, subject, body) + customer context (tier, "
-    "open_tickets) and a summary.\nClassify into exactly one priority:\n\n"
-    "P1 - Outage / Production Blocked: Core service completely unusable, "
-    "blocking all/most users with no workaround.\n  e.g., production API "
-    "returning 500s for all requests; webhooks/events failing "
-    "completely; widespread auth outage\nP2 - Degraded or Time-Bound: "
-    "Partial impairment, single-user block, or clear near-term deadline "
-    "but not full outage.\n  e.g., export/job stuck for hours needed by "
-    "tomorrow; individual account lockout / reset not arriving needed "
-    "today; compliance doc needed by Friday for renewal\nP3 - Routine: "
-    "General question, feature request, or non-urgent admin task with no "
-    "immediate deadline.\n  e.g., invoice/billing clarification; how-to "
-    "change workspace name; feature inquiry (SSO, mobile app); update "
-    "payment method\n\nBase decision on impact/urgency described in the "
-    "email, not on customer tier alone.\nOutput exactly one of: P1, P2, "
-    "P3\nNo explanation, punctuation, or other text."
+    "You are a support-triage priority judge.\nInput: one support email "
+    "(sender, subject, body) plus customer context (tier, open_tickets).\n"
+    "Task: Assign exactly one priority based on impact, scope, and "
+    "urgency in the email.\nP1 - Outage / Production Blocked: Complete "
+    "failure of core service with no workaround, affecting many/all "
+    "users.\n  Examples: production API returning 500s for all requests; "
+    "webhook deliveries failing system-wide; checkout/payments "
+    "completely down.\nP2 - Degraded or Time-Bound: Partial impairment or "
+    "clear deadline/single-user block requiring timely fix.\n  Examples: "
+    "export/job stuck for hours past normal runtime; account locked out, "
+    "reset not arriving, needs access today; compliance doc needed by "
+    "deadline for renewal.\nP3 - Routine: General question, feature "
+    "request, or non-urgent admin task with no time pressure.\n  "
+    "Examples: invoice line-item clarification (no rush); how-to change "
+    "workspace name; SSO or feature availability question.\nUse "
+    "subject/body impact and urgency as primary signal; "
+    "tier/open_tickets are secondary context only.\nDo not infer details "
+    "beyond the provided content.\nOutput exactly one label: P1, P2, or "
+    "P3\nNo other text, punctuation, or explanation."
 )
 
 
@@ -156,13 +158,23 @@ def judge_messages(email, customer, summary):
     ]
 
 
+def _priority_from_text(text):
+    t = text.strip()
+    if t.startswith("{"):
+        i = t.index('"priority"') + len('"priority"')
+        i = t.index(":", i) + 1
+        j = t.index('"', i) + 1
+        return Priority(t[j : t.index('"', j)])
+    return Priority(t.strip('"'))
+
+
 def judge(email, customer, summary):
     result = llm.chat(
         role="judge",
         messages=judge_messages(email, customer, summary),
         response_schema=Priority,
     )
-    return Priority(result.text.strip().strip('"'))
+    return _priority_from_text(result.text)
 
 
 def render_reply(input, prev, priority):

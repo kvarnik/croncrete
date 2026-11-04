@@ -39,6 +39,19 @@ def test_pricing_standard_tier():
     assert llm._cost(cfg, 0, 0, 1_000_000) == pytest.approx(4.25)
 
 
+def test_validate_schema_accepts_enum_and_model():
+    from croncrete import Priority
+    from croncrete.compiler.codegen import JudgePrompt
+
+    llm._validate_schema(Priority, '"P1"')
+    llm._validate_schema(Priority, '{"priority": "P2", "reasoning": "why"}')
+    llm._validate_schema(JudgePrompt, '{"judge_prompt": "x"}')
+    with pytest.raises(Exception):
+        llm._validate_schema(Priority, '"P9"')
+    with pytest.raises(Exception):
+        llm._validate_schema(Priority, '{"priority": "P9"}')
+
+
 def test_replay_miss_raises_and_never_networks(tmp_path, monkeypatch):
     monkeypatch.setenv("CRONCRETE_REPLAY", "1")
     monkeypatch.setenv("CRONCRETE_CASSETTES", str(tmp_path))

@@ -245,13 +245,23 @@ def render_module(
         "    ]",
         "",
         "",
+        "def _priority_from_text(text):",
+        "    t = text.strip()",
+        '    if t.startswith("{"):',
+        '        i = t.index("\\"priority\\"") + len("\\"priority\\"")',
+        '        i = t.index(":", i) + 1',
+        '        j = t.index("\\"", i) + 1',
+        '        return Priority(t[j : t.index("\\"", j)])',
+        "    return Priority(t.strip('\"'))",
+        "",
+        "",
         "def judge(email, customer, summary):",
         "    result = llm.chat(",
         '        role="judge",',
         "        messages=judge_messages(email, customer, summary),",
         "        response_schema=Priority,",
         "    )",
-        "    return Priority(result.text.strip().strip('\"'))",
+        "    return _priority_from_text(result.text)",
         "",
         "",
         "def render_reply(input, prev, priority):",
@@ -319,6 +329,17 @@ def compile(
     sla_table = json.loads(Path(sla).read_text())
 
     out_path = Path(out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    candidate = out_path.with_name(out_path.stem + ".candidate.py")
+    # Dry run with a stub prompt: deterministic codegen bugs fail here with
+    # zero live spend, before any model call.
+    stub = render_module(group, wiring, tools, template_text, sla_table, "STUB PROMPT")
+    candidate.write_text(stub)
+    try:
+        checks.check_file(candidate)
+    finally:
+        candidate.unlink(missing_ok=True)
+
     last_err: Exception | None = None
     for _ in range(JUDGE_PROMPT_REGENS + 1):
         prompt = generate_judge_prompt(group)
@@ -328,14 +349,14 @@ def compile(
         except checks.CheckError as e:
             last_err = e
             continue
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(source)
+        candidate.write_text(source)
         try:
-            checks.check_file(out_path)
+            checks.check_file(candidate)
         except checks.CheckError as e:
-            out_path.unlink(missing_ok=True)
+            candidate.unlink(missing_ok=True)
             last_err = e
             continue
+        candidate.replace(out_path)
         return out_path
     if last_err is not None:
         raise last_err
