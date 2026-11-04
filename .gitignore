@@ -224,3 +224,4 @@ __marimo__/
 repairs/*.patch
 !repairs/.gitkeep
 report.md
+!demo/report.md

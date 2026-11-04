@@ -1,46 +1,65 @@
-# Video script (3 minutes, live models)
+# Video script (3 minutes, no live commands)
 
-Setup: `.env` with keys, fresh shell, repo at this commit, port 8000 free.
-Narrate replay/live honestly: the repair call and judges below are LIVE.
+Format: narrate over prepared screens — open files and saved outputs,
+scroll and highlight. Nothing is typed on camera. Every artifact below
+is committed in the repo: traces, the workflow, and the `demo/`
+transcript + report.
 
 ## 0:00 The pitch (20s)
 
-"Agents prototype. Croncrete compiles the workflow into Python. If you have
-a support agent that works, we freeze the happy path into checked code.
-Built during the hackathon."
+Show: the logo + one line: "Agents prototype. Croncrete compiles the
+workflow into Python."
 
-## 0:20 One agent run and its cost (25s)
+Say: "If you have a support agent that works, Croncrete freezes the
+happy path into checked code. Built during the hackathon." Who it's
+for: "teams with a working agent that want the repeating part
+deterministic."
 
-Show a trace: `cat examples/support_triage/traces/e01.json | head -30`.
-Point at steps (crm, ticket, outbox) and totals (~$0.01, 4 model calls).
+## 0:20 The problem (25s)
 
-## 0:45 Open triage.py (30s)
+Show: one recorded trace (`examples/support_triage/traces/e01.json`) —
+steps on the left, totals on the right: 4 model calls, ~$0.01.
 
-Open `examples/support_triage/workflows/triage.py`.
-Point at `JUDGE_PROMPT` (model-written), then at a wired step
-(`"email": "input.sender"` in STEPS — derived, no model).
+Say: "Every email costs four model round-trips. Worse, when an API
+changes shape, the agent doesn't stop — it guesses, and files a ticket
+with garbage. You pay per email and you can't audit what happened."
 
-## 1:15 Drift, halt, repair, approve, resume (65s)
+## 0:45 The compiled artifact (30s)
 
-Terminal, live:
+Show: `examples/support_triage/workflows/triage.py`, two stops while
+scrolling. First `JUDGE_PROMPT` — "the only thing a model wrote."
+Then one STEPS entry — `"email": "input.sender"` — "everything else
+is derived: wired arguments, inferred guards, no model-written logic."
 
-1. Start mocks; run e01 (completes).
-2. `curl -X POST localhost:8000/admin/drift`; run e02 → `status: halted`,
-   `failed_step: 0`, expected `tier` vs observed `plan`.
-3. `croncrete repair --run-id …` → read the diff (nested Plan guard,
-   `tier` from `plan.plan_tier`), test passes.
-4. `croncrete repair --run-id … --approve` → applied.
-5. `croncrete resume --run-id …` → `completed` (same run id).
+Say: "The agent loop becomes one judgment call. The rest is Python you
+can read, test, and checkpoint."
 
-Say: one function and one guard, human-approved, earlier steps never reran.
+## 1:15 The drift story (65s)
 
-## 2:20 The report (25s)
+Open `demo/transcript.md` and scroll through three screens; linger on each.
 
-`croncrete report --traces … --workflow …`.
-Read: 4 calls → 1 call, deterministic 5/5, priority agreement 10/10.
-Say "validated, never proven; priority is an agreement rate."
+1. The halt: `status: halted, failed_step: 0`, expected `tier` vs
+   observed `plan`. Say: "We broke the CRM on purpose. The script
+   stops and shows both shapes instead of guessing."
+2. The diff: the two-hunk patch — nested `Plan` guard, `tier` read
+   from `plan.plan_tier` — plus `1 passed`. Say: "A model rewrites
+   exactly one function and one guard. A generated test proves the
+   output shape is unchanged, and a human approves."
+3. The resume: `completed` with the same run id. Say: "Same run,
+   same ticket key, earlier steps never reran."
 
-## 2:45 Keyless demo (15s)
+## 2:20 The numbers (25s)
 
-`make demo` with no keys in env. Say: cassettes replay the model calls,
-mocks only, no real email. End card: repo URL.
+Show: `demo/report.md` (10 runs).
+
+- "Four model calls per email become one."
+- "Deterministic fields match 5 for 5 where the agent followed the
+  template. Priority agreement 10 for 10."
+- "Comparison is deterministic code — validated, never proven."
+
+## 2:45 The close (15s)
+
+Show: `make demo` in the README and the repo URL.
+
+Say: "The whole story replays with no keys and no real email — mocks
+only. Repo link below."
