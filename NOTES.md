@@ -68,3 +68,8 @@
 - Demo order fix: restore workflow BEFORE report (report replays normal
   traces through the original module; plan's literal order crashes on the
   patched guard). Report output is order-independent (pure replay).
+
+## M7 (README, video, submit)
+- README in plan order with real demo transcript + live report numbers.
+- Models section neutral per user call; open-weights claims parked.
+- VIDEO_SCRIPT.md: 3-min live-model beats; user records + submits.
