@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: bob@acme.example\nsubject: Question about Q3 invoice line items\nbody: Hello billing team, I am reviewing our Q3 invoice and line items 4 and 7 do not match the quote we signed in June. Could you send a corrected breakdown when you get a chance? No rush.\ntier: enterprise\nopen_tickets: 1\nsummary: Question about Q3 invoice line items",
+        "content": "sender: dave@beta.example\nsubject: Feature request: SSO for our team\nbody: Hi there, our team is growing and we would like to set up SSO so we can manage seats centrally. Is that available on our current plan, and what are the setup steps?\ntier: pro\nopen_tickets: 0\nsummary: Feature request: SSO for our team",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.00287325,
-    "latency_ms": 4853,
-    "text": "{ \"priority\": \"P3\" }",
-    "tokens_in": 347,
-    "tokens_out": 574,
+    "cost_usd": 0.0,
+    "latency_ms": 295,
+    "text": "{\n  \"priority\": \"P3\"\n}",
+    "tokens_in": 369,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.002464,
-    "latency_ms": 4249,
-    "text": "{ \"priority\": \"P3\" }",
-    "tokens_in": 329,
-    "tokens_out": 483,
+    "cost_usd": 0.0,
+    "latency_ms": 293,
+    "text": "{\n  \"priority\": \"P3\"\n}",
+    "tokens_in": 359,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

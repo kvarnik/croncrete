@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: frank@personal.example\nsubject: How do I change my workspace name?\nbody: Quick question: how do I change my workspace name? I looked in settings but could not find it. Thanks!\ntier: free\nopen_tickets: 1\nsummary: How do I change my workspace name?",
+        "content": "sender: alice@acme.example\nsubject: URGENT: production API down, all requests failing\nbody: Hi, our production API started returning 500s for every request about 20 minutes ago. Status page shows green but our dashboards are all red. This is blocking all of our customers. Please treat as urgent.\ntier: enterprise\nopen_tickets: 2\nsummary: URGENT: production API down, all requests failing",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.004318,
-    "latency_ms": 9508,
-    "text": "{ \"priority\": \"P3\" }",
-    "tokens_in": 340,
-    "tokens_out": 916,
+    "cost_usd": 0.0,
+    "latency_ms": 417,
+    "text": "{\n  \"priority\": \"P1\"\n}",
+    "tokens_in": 387,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

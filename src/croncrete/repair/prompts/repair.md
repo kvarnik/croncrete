@@ -13,7 +13,8 @@ Rules:
 
 - Keep the same function name and `(response, input, prev)` signature, and the
   same guard class name. One top-level definition per source, nothing else.
-  Nest any sub-models inside the guard class, not beside it.
+  Nest any sub-models inside the guard class, not beside it, and define
+  them BEFORE the fields that reference them (names must resolve statically).
 - The new guard accepts the drifted response: every observed field typed
   (`str|int|float|bool` or nested model), required when always present, extra
   fields forbidden. No enums or ranges.

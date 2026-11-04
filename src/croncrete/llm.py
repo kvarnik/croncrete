@@ -92,8 +92,9 @@ def get_role_config(role: Role) -> RoleConfig:
             price_out=4.25,
         )
     if role in ("repair", "judge"):
+        # Default matches the committed cassettes; override via OPEN_MODEL.
         return RoleConfig(
-            model=os.environ.get("OPEN_MODEL", "meta-models/muse-spark-open-1026"),
+            model=os.environ.get("OPEN_MODEL", "google/gemma-4-26B-A4B-it"),
             base_url_env="OPEN_BASE_URL",
             api_key_env="OPEN_API_KEY",
             price_in=_open_price("OPEN_PRICE_IN", 0.0),
@@ -125,9 +126,12 @@ def _schema_key(response_schema: Any) -> Any:
 
 
 def cassette_key(role: Role, messages: list, tools: Any, response_schema: Any) -> str:
+    # Model is part of the key: a model switch must miss, never serve stale.
+    model = get_role_config(role).model
     canonical = json.dumps(
         {
             "role": role,
+            "model": model,
             "messages": messages,
             "tools": tools,
             "response_schema": _schema_key(response_schema),

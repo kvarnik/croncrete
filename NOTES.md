@@ -65,6 +65,14 @@
 - Validator + generated judge accept bare or object verdicts (fence kept tight).
 - OPEN: is 1.3 open-weights? Demo narrative claims need truth-check at M7.
 - Freeze: judge.md, repair.md, triage.py pinned at dd7bd1a for cassettes.
+
+## Runtime model: Gemma on Modal (user-hosted vLLM)
+- judge/repair now google/gemma-4-26B-A4B-it via Modal OpenAI server.
+- Cassette keys include the model id; stale-model replays miss loudly.
+- repair.md: nested classes before referencing fields (Gemma ordered late;
+  runtime-lenient but ruff F821 — fence caught it, prompt fixed it).
+- Re-recorded 11 cassettes on Modal; 10/10 judges agree.
+- Freeze v2: repair.md changed; cassettes match it + triage.py @ dd7bd1a.
 - Demo order fix: restore workflow BEFORE report (report replays normal
   traces through the original module; plan's literal order crashes on the
   patched guard). Report output is order-independent (pure replay).

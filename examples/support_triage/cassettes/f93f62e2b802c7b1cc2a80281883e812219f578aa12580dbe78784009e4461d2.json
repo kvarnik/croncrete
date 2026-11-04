@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: carol@beta.example\nsubject: Data export stuck at 90% for 6 hours\nbody: Our nightly data export has been stuck at 90 percent for six hours. The job usually finishes in forty minutes. We need the file for a board meeting tomorrow morning, so any help today would be appreciated.\ntier: pro\nopen_tickets: 1\nsummary: Data export stuck at 90% for 6 hours",
+        "content": "sender: grace@globex.example\nsubject: Need SOC2 report by Friday for renewal\nbody: Hello, our security team needs your current SOC2 report by Friday to finish our vendor review. If we miss the deadline our renewal gets pushed a quarter, so a fast turnaround matters here.\ntier: enterprise\nopen_tickets: 3\nsummary: Need SOC2 report by Friday for renewal",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.004492,
-    "latency_ms": 8392,
-    "text": "{ \"priority\": \"P2\" }",
-    "tokens_in": 367,
-    "tokens_out": 949,
+    "cost_usd": 0.0,
+    "latency_ms": 291,
+    "text": "{\n  \"priority\": \"P2\"\n}",
+    "tokens_in": 373,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

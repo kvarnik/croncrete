@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: grace@globex.example\nsubject: Need SOC2 report by Friday for renewal\nbody: Hello, our security team needs your current SOC2 report by Friday to finish our vendor review. If we miss the deadline our renewal gets pushed a quarter, so a fast turnaround matters here.\ntier: enterprise\nopen_tickets: 3\nsummary: Need SOC2 report by Friday for renewal",
+        "content": "sender: bob@acme.example\nsubject: Question about Q3 invoice line items\nbody: Hello billing team, I am reviewing our Q3 invoice and line items 4 and 7 do not match the quote we signed in June. Could you send a corrected breakdown when you get a chance? No rush.\ntier: enterprise\nopen_tickets: 1\nsummary: Question about Q3 invoice line items",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.00268125,
-    "latency_ms": 4608,
-    "text": "{ \"priority\": \"P2\" }",
-    "tokens_in": 343,
-    "tokens_out": 530,
+    "cost_usd": 0.0,
+    "latency_ms": 300,
+    "text": "{\n  \"priority\": \"P3\"\n}",
+    "tokens_in": 377,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: judy@umbrella.example\nsubject: Webhook deliveries failing since this morning\nbody: Since about 9am today none of our webhook deliveries are arriving. Our endpoint is healthy and we have not changed anything on our side. Can you check whether events are backing up?\ntier: pro\nopen_tickets: 2\nsummary: Webhook deliveries failing since this morning",
+        "content": "sender: ivan@personal.example\nsubject: Do you have a mobile app?\nbody: Do you have a mobile app? I do most of my work from my phone and the mobile site is a bit hard to use. Just curious, no problem if not.\ntier: free\nopen_tickets: 0\nsummary: Do you have a mobile app?",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.01045675,
-    "latency_ms": 22286,
-    "text": "{ \"priority\": \"P1\" }",
-    "tokens_in": 355,
-    "tokens_out": 2356,
+    "cost_usd": 0.0,
+    "latency_ms": 281,
+    "text": "{\n  \"priority\": \"P3\"\n}",
+    "tokens_in": 368,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }

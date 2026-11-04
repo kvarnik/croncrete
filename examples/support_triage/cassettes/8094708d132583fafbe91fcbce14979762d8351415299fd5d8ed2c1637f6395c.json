@@ -6,7 +6,7 @@
         "role": "system"
       },
       {
-        "content": "sender: dave@beta.example\nsubject: Feature request: SSO for our team\nbody: Hi there, our team is growing and we would like to set up SSO so we can manage seats centrally. Is that available on our current plan, and what are the setup steps?\ntier: pro\nopen_tickets: 0\nsummary: Feature request: SSO for our team",
+        "content": "sender: carol@beta.example\nsubject: Data export stuck at 90% for 6 hours\nbody: Our nightly data export has been stuck at 90 percent for six hours. The job usually finishes in forty minutes. We need the file for a board meeting tomorrow morning, so any help today would be appreciated.\ntier: pro\nopen_tickets: 1\nsummary: Data export stuck at 90% for 6 hours",
         "role": "user"
       }
     ],
@@ -16,11 +16,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.003426,
-    "latency_ms": 8152,
-    "text": "{ \"priority\": \"P3\" }",
-    "tokens_in": 354,
-    "tokens_out": 702,
+    "cost_usd": 0.0,
+    "latency_ms": 285,
+    "text": "{\n  \"priority\": \"P2\"\n}",
+    "tokens_in": 385,
+    "tokens_out": 13,
     "tool_calls": []
   }
 }
