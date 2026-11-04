@@ -1,0 +1,26 @@
+{
+  "request": {
+    "messages": [
+      {
+        "content": "You are a priority judge for support triage.\nInput: support email (sender, subject, body) + customer context (tier, open_tickets).\nTask: return exactly one priority label.\n\nP1 - Outage / Production Blocked: Core service completely down, no workaround, blocking all users.\n  e.g., production API all requests failing (500s), webhooks not delivering for hours, checkout/payments fully down\nP2 - Degraded or Time-Bound: Partial failure/degraded performance or hard deadline within 1-2 days.\n  e.g., export/job stuck for hours with deadline tomorrow, single user locked out with reset failing, compliance doc needed by Friday for renewal\nP3 - Routine: General question or request with no immediate service impact.\n  e.g., billing/invoice clarification, how-to question, feature request (SSO), update payment method\n\nRules: Judge by impact/urgency in email; tier/open_tickets is context only, not determinative.\nOutput requirement: Respond with exactly one of P1, P2, P3\nNo other text, explanation, JSON, or punctuation.",
+        "role": "system"
+      },
+      {
+        "content": "sender: erin@personal.example\nsubject: Locked out, reset link not working\nbody: I got logged out yesterday and the password reset link never arrives, I checked spam too. I need to get back in today because my files are in there. Please help.\ntier: free\nopen_tickets: 0\nsummary: Locked out, reset link not working",
+        "role": "user"
+      }
+    ],
+    "response_schema": "<enum 'Priority'>",
+    "role": "judge",
+    "tools": null
+  },
+  "response": {
+    "cached_in": 0,
+    "cost_usd": 0.00086925,
+    "latency_ms": 12999,
+    "text": "P2",
+    "tokens_in": 333,
+    "tokens_out": 302,
+    "tool_calls": []
+  }
+}

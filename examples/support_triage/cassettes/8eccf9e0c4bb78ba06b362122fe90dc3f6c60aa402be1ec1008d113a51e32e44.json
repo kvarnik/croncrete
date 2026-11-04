@@ -1,0 +1,26 @@
+{
+  "request": {
+    "messages": [
+      {
+        "content": "You are a priority judge for support triage.\nInput: support email (sender, subject, body) + customer context (tier, open_tickets).\nTask: return exactly one priority label.\n\nP1 - Outage / Production Blocked: Core service completely down, no workaround, blocking all users.\n  e.g., production API all requests failing (500s), webhooks not delivering for hours, checkout/payments fully down\nP2 - Degraded or Time-Bound: Partial failure/degraded performance or hard deadline within 1-2 days.\n  e.g., export/job stuck for hours with deadline tomorrow, single user locked out with reset failing, compliance doc needed by Friday for renewal\nP3 - Routine: General question or request with no immediate service impact.\n  e.g., billing/invoice clarification, how-to question, feature request (SSO), update payment method\n\nRules: Judge by impact/urgency in email; tier/open_tickets is context only, not determinative.\nOutput requirement: Respond with exactly one of P1, P2, P3\nNo other text, explanation, JSON, or punctuation.",
+        "role": "system"
+      },
+      {
+        "content": "sender: carol@beta.example\nsubject: Data export stuck at 90% for 6 hours\nbody: Our nightly data export has been stuck at 90 percent for six hours. The job usually finishes in forty minutes. We need the file for a board meeting tomorrow morning, so any help today would be appreciated.\ntier: pro\nopen_tickets: 1\nsummary: Data export stuck at 90% for 6 hours",
+        "role": "user"
+      }
+    ],
+    "response_schema": "<enum 'Priority'>",
+    "role": "judge",
+    "tools": null
+  },
+  "response": {
+    "cached_in": 0,
+    "cost_usd": 0.000855,
+    "latency_ms": 11777,
+    "text": "P2",
+    "tokens_in": 348,
+    "tokens_out": 280,
+    "tool_calls": []
+  }
+}

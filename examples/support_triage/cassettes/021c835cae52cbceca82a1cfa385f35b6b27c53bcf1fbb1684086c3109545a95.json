@@ -36,11 +36,11 @@
   },
   "response": {
     "cached_in": 0,
-    "cost_usd": 0.0,
-    "latency_ms": 816,
-    "text": "{\"function_source\": \"def map_crm_lookup(response, input, prev):\\n    return {\\n        \\\"customer_id\\\": response[\\\"customer_id\\\"],\\n        \\\"name\\\": response[\\\"name\\\"],\\n        \\\"open_tickets\\\": response[\\\"open_tickets\\\"],\\n        \\\"tier\\\": response[\\\"plan\\\"][\\\"plan_tier\\\"],\\n    }\", \"guard_model_source\": \"class CrmLookupGuard(BaseModel):\\n    model_config = ConfigDict(extra=\\\"forbid\\\")\\n\\n    class Plan(BaseModel):\\n        plan_tier: str\\n        renewal: str\\n\\n    customer_id: str\\n    name: str\\n    open_tickets: int\\n    plan: Plan\"}",
-    "tokens_in": 654,
-    "tokens_out": 171,
+    "cost_usd": 0.0031925,
+    "latency_ms": 67590,
+    "text": "{\"function_source\": \"def map_crm_lookup(response, input, prev):\\n    return {\\n        \\\"customer_id\\\": response[\\\"customer_id\\\"],\\n        \\\"name\\\": response[\\\"name\\\"],\\n        \\\"open_tickets\\\": response[\\\"open_tickets\\\"],\\n        \\\"tier\\\": response[\\\"plan\\\"][\\\"plan_tier\\\"],\\n    }\", \"guard_model_source\": \"class CrmLookupGuard(BaseModel):\\n    model_config = ConfigDict(extra=\\\"forbid\\\")\\n    class Plan(BaseModel):\\n        plan_tier: str\\n        renewal: str\\n    customer_id: str\\n    name: str\\n    open_tickets: int\\n    plan: Plan\"}",
+    "tokens_in": 616,
+    "tokens_out": 1615,
     "tool_calls": []
   }
 }
