@@ -73,6 +73,11 @@
   runtime-lenient but ruff F821 — fence caught it, prompt fixed it).
 - Re-recorded 11 cassettes on Modal; 10/10 judges agree.
 - Freeze v2: repair.md changed; cassettes match it + triage.py @ dd7bd1a.
+
+## Glimmer switch lesson: commit workflow BEFORE recording
+- Recompile-then-record with an uncommitted triage.py is fatal: any
+  `git checkout --` restore orphans the cassettes (prompt is in the key).
+- Rule: commit the workflow the moment it recompiles; record only on clean tree.
 - Demo order fix: restore workflow BEFORE report (report replays normal
   traces through the original module; plan's literal order crashes on the
   patched guard). Report output is order-independent (pure replay).

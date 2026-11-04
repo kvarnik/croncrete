@@ -252,7 +252,7 @@ def render_module(
         '        i = t.index(":", i) + 1',
         '        j = t.index("\\"", i) + 1',
         '        return Priority(t[j : t.index("\\"", j)])',
-        "    return Priority(t.strip('\"'))",
+        "    return Priority(t.strip('\"').strip(\"'\"))",
         "",
         "",
         "def judge(email, customer, summary):",

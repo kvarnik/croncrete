@@ -21,7 +21,12 @@ from pydantic import BaseModel
 
 Role = str  # agent | compiler | repair | judge
 
-TIMEOUT_S = 60.0
+# Output budgets. vLLM defaults max_tokens tiny when unset, which starves
+# thinking models (reasoning eats the budget, content comes back empty).
+# Caps are harmless on runtimes with sane defaults.
+ROLE_MAX_TOKENS = {"agent": 2048, "compiler": 2048, "repair": 4096, "judge": 2048}
+# Repair gets a longer clock: thinking + two code blocks exceeds 60s.
+ROLE_TIMEOUTS = {"agent": 60.0, "compiler": 60.0, "repair": 240.0, "judge": 60.0}
 
 # Keys that must never enter a model message (prompt stability).
 STRIP_KEYS = frozenset(
@@ -94,7 +99,7 @@ def get_role_config(role: Role) -> RoleConfig:
     if role in ("repair", "judge"):
         # Default matches the committed cassettes; override via OPEN_MODEL.
         return RoleConfig(
-            model=os.environ.get("OPEN_MODEL", "google/gemma-4-26B-A4B-it"),
+            model=os.environ.get("OPEN_MODEL", "RedHatAI/Muse-Glimmer-30B-FP8-block"),
             base_url_env="OPEN_BASE_URL",
             api_key_env="OPEN_API_KEY",
             price_in=_open_price("OPEN_PRICE_IN", 0.0),
@@ -192,12 +197,17 @@ def _live_call(
     messages: list[dict[str, Any]],
     tools: list[dict[str, Any]] | None,
     response_schema: Any,
+    role: Role,
 ) -> dict[str, Any]:
     base_url = os.environ.get(cfg.base_url_env, "").rstrip("/")
     api_key = os.environ.get(cfg.api_key_env, "")
     if not base_url or not api_key:
         raise LLMError(f"missing {cfg.base_url_env} or {cfg.api_key_env}")
-    payload: dict[str, Any] = {"model": model, "messages": messages}
+    payload: dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "max_tokens": ROLE_MAX_TOKENS[role],
+    }
     if tools:
         payload["tools"] = tools
     if response_schema is not None:
@@ -210,7 +220,7 @@ def _live_call(
                 f"{base_url}/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}"},
                 json=payload,
-                timeout=TIMEOUT_S,
+                timeout=ROLE_TIMEOUTS[role],
             )
             latency_ms = int((time.monotonic() - t0) * 1000)
             if resp.status_code in (429,) or resp.status_code >= 500:
@@ -230,7 +240,10 @@ def _validate_schema(response_schema: Any, text: str) -> None:
     if isinstance(response_schema, type) and issubclass(response_schema, BaseModel):
         response_schema.model_validate_json(text)
     elif isinstance(response_schema, type) and issubclass(response_schema, Enum):
-        payload = json.loads(text)
+        try:
+            payload = json.loads(text.strip())
+        except json.JSONDecodeError:
+            payload = text.strip()  # bare token like P1
         if isinstance(payload, dict):
             response_schema(payload["priority"])  # reasoning channel ignored
         else:
@@ -279,7 +292,7 @@ def chat(
         return result
 
     if response_schema is None:
-        data = _live_call(cfg, cfg.model, clean_messages, tools, None)
+        data = _live_call(cfg, cfg.model, clean_messages, tools, None, role)
         result = _parse_result(data, cfg)
     else:
         # Schema miss retries once with the validation error attached.
@@ -287,7 +300,7 @@ def chat(
         last_err: Exception | None = None
         result = None
         for attempt in range(2):
-            data = _live_call(cfg, cfg.model, attempt_messages, tools, response_schema)
+            data = _live_call(cfg, cfg.model, attempt_messages, tools, response_schema, role)
             parsed = _parse_result(data, cfg)
             try:
                 _validate_schema(response_schema, parsed.text)

@@ -44,12 +44,21 @@ def test_validate_schema_accepts_enum_and_model():
     from croncrete.compiler.codegen import JudgePrompt
 
     llm._validate_schema(Priority, '"P1"')
+    llm._validate_schema(Priority, "P1")
     llm._validate_schema(Priority, '{"priority": "P2", "reasoning": "why"}')
     llm._validate_schema(JudgePrompt, '{"judge_prompt": "x"}')
     with pytest.raises(Exception):
         llm._validate_schema(Priority, '"P9"')
     with pytest.raises(Exception):
         llm._validate_schema(Priority, '{"priority": "P9"}')
+
+
+def test_role_token_budgets_cover_thinking_and_payload():
+    assert llm.ROLE_MAX_TOKENS["repair"] >= 4096
+    assert llm.ROLE_MAX_TOKENS["judge"] >= 1024
+    assert set(llm.ROLE_MAX_TOKENS) == {"agent", "compiler", "repair", "judge"}
+    assert llm.ROLE_TIMEOUTS["repair"] >= 240.0
+    assert set(llm.ROLE_TIMEOUTS) == {"agent", "compiler", "repair", "judge"}
 
 
 def test_replay_miss_raises_and_never_networks(tmp_path, monkeypatch):

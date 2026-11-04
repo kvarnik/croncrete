@@ -99,25 +99,22 @@ SCOPES = ["GET /crm/customers", "POST /tickets", "POST /outbox"]
 
 
 JUDGE_PROMPT = (
-    "You are a support-triage priority judge.\nInput: one support email "
-    "(sender, subject, body) plus customer context (tier, open_tickets).\n"
-    "Task: Assign exactly one priority based on impact, scope, and "
-    "urgency in the email.\nP1 - Outage / Production Blocked: Complete "
-    "failure of core service with no workaround, affecting many/all "
-    "users.\n  Examples: production API returning 500s for all requests; "
-    "webhook deliveries failing system-wide; checkout/payments "
-    "completely down.\nP2 - Degraded or Time-Bound: Partial impairment or "
-    "clear deadline/single-user block requiring timely fix.\n  Examples: "
-    "export/job stuck for hours past normal runtime; account locked out, "
-    "reset not arriving, needs access today; compliance doc needed by "
-    "deadline for renewal.\nP3 - Routine: General question, feature "
-    "request, or non-urgent admin task with no time pressure.\n  "
-    "Examples: invoice line-item clarification (no rush); how-to change "
-    "workspace name; SSO or feature availability question.\nUse "
-    "subject/body impact and urgency as primary signal; "
-    "tier/open_tickets are secondary context only.\nDo not infer details "
-    "beyond the provided content.\nOutput exactly one label: P1, P2, or "
-    "P3\nNo other text, punctuation, or explanation."
+    "You are a priority judge for support triage.\nInput: support email "
+    "(sender, subject, body) + customer context (tier, open_tickets).\n"
+    "Task: return exactly one priority label.\n\nP1 - Outage / Production "
+    "Blocked: Core service completely down, no workaround, blocking all "
+    "users.\n  e.g., production API all requests failing (500s), webhooks "
+    "not delivering for hours, checkout/payments fully down\nP2 - "
+    "Degraded or Time-Bound: Partial failure/degraded performance or "
+    "hard deadline within 1-2 days.\n  e.g., export/job stuck for hours "
+    "with deadline tomorrow, single user locked out with reset failing, "
+    "compliance doc needed by Friday for renewal\nP3 - Routine: General "
+    "question or request with no immediate service impact.\n  e.g., "
+    "billing/invoice clarification, how-to question, feature request "
+    "(SSO), update payment method\n\nRules: Judge by impact/urgency in "
+    "email; tier/open_tickets is context only, not determinative.\nOutput "
+    "requirement: Respond with exactly one of P1, P2, P3\nNo other text, "
+    "explanation, JSON, or punctuation."
 )
 
 
@@ -165,7 +162,7 @@ def _priority_from_text(text):
         i = t.index(":", i) + 1
         j = t.index('"', i) + 1
         return Priority(t[j : t.index('"', j)])
-    return Priority(t.strip('"'))
+    return Priority(t.strip('"').strip("'"))
 
 
 def judge(email, customer, summary):
