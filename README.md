@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="concrete_logo.png" alt="Croncrete logo" width="480">
+</p>
+
 # Croncrete
 
 Agents prototype. Croncrete compiles the workflow into Python.
