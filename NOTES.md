@@ -59,3 +59,12 @@
 - deterministic exact-match on template-following runs (5); priority agreement.
 - make demo recipe written (normal/drift/halt/repair/resume/report/restore).
 - demo-normal=e01, demo-drift=e02; 10 judge + 1 repair cassettes to record live.
+
+## Judge/repair model: muse-spark-1.3 via Meta API
+- Baseten id 404s on api.meta.ai; 1.3 resolves, returns {priority, reasoning}.
+- Validator + generated judge accept bare or object verdicts (fence kept tight).
+- OPEN: is 1.3 open-weights? Demo narrative claims need truth-check at M7.
+- Freeze: judge.md, repair.md, triage.py pinned at dd7bd1a for cassettes.
+- Demo order fix: restore workflow BEFORE report (report replays normal
+  traces through the original module; plan's literal order crashes on the
+  patched guard). Report output is order-independent (pure replay).

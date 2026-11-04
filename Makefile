@@ -37,9 +37,10 @@ demo: .venv/bin/python
 	.venv/bin/croncrete repair --run-id $$RUNID --approve; \
 	echo "== resume =="; \
 	.venv/bin/croncrete resume --run-id $$RUNID --base-url $(DEMO_URL); \
+	git checkout -- $(DEMO_WF); \
 	echo "== report =="; \
 	.venv/bin/croncrete report --traces $(DEMO_TRACES) --workflow $(DEMO_WF); \
-	git checkout -- $(DEMO_WF); rm -f repairs/$$RUNID.patch
+	rm -f repairs/$$RUNID.patch
 
 test: .venv/bin/python
 	.venv/bin/pytest
